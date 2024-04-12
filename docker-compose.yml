@@ -1,0 +1,15 @@
+services:
+  # Frigate Cameras
+  apache2-php:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    restart: unless-stopped
+    volumes:
+      - /opt/apacheproxy/conf/apache2/:/etc/apache2/
+      - /opt/apacheproxy/conf/www/:/var/www/
+      - /opt/apacheproxy/conf/php/:/etc/php/
+      # /opt/apacheproxy/scripts/app.sh:/app/scripts/app.sh
+    ports:
+      - "80:80"
+      - "443:443" # SSL

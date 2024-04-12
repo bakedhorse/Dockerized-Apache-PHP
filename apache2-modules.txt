@@ -1,0 +1,11 @@
+ssl
+headers
+rewrite
+http2
+proxy
+proxy_http2
+proxy_fcgi
+proxy_http
+proxy_scgi
+proxy_wstunnel
+remoteip
