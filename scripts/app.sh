@@ -25,6 +25,13 @@ if [ -z "$(ls -A "$foldercheck")" ]; then
     cp -ar /app/default/php /etc/
 fi
 
+# List php modules (and its packages)
+echo "#Listing PHP Modules"
+php -m
+echo "#Listing PHP Module Packages"
+apt list --installed | grep php$PHPBASEVER
+echo
+
 # Apache2 modules
 echo "#Enabling apache2 modules..."
 module_file="/app/modules/apache2-modules.txt"
