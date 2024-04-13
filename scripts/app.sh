@@ -105,5 +105,5 @@ fi
 while true; do
     # permissions
     chown www-data:www-data /var/www -R
-    sleep 1
+    sleep 10
 done

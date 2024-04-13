@@ -5,6 +5,7 @@ services:
       context: ./
       dockerfile: ./Dockerfile
     restart: unless-stopped
+    #network_mode: host   # Uncomment if u need access to host network
     volumes:
       - "${APP_DIR}/modules/:/app/modules"
       - "${APP_DIR}/conf/apache2/:/etc/apache2/"
