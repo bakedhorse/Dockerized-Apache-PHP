@@ -1,36 +1,51 @@
 #!/bin/bash
 
+PHPBASEVER=8.1
+
 cd /app
 
 # Update packages
 apt update
 
 # Install apache2 and php
-apt install -y apache2 php8.1 php8.1-fpm --no-install-recommends
+apt install -y apache2 php$PHPBASEVER php$PHPBASEVER-fpm --no-install-recommends
 
-# Apache2 modules
-module_file="/app/apache2-modules.txt"
-if [ -f "$module_file" ]; then
-	modules=$(tr '\n' ' ' < "$module_file")
-    a2enmod $modules
-else
-    echo "Module file '$module_file' not found."
-    exit 1
-fi
+# Disable the default site file by default (it will be enabled on startup of container due to the default apache2-sites.txt file)
+a2dissite 000-default
 
 # PHP Extensions
 extension_file="/app/php-extensions.txt"
 if [ -f "$extension_file" ]; then
-	modules=$(sed 's/.*/php8.1-&/' "$extension_file" | tr '\n' ' ')
-	apt install --no-install-recommends -y $modules
+	sed -i 's/\r$//' $extension_file
+	sed -i -e '$a\' $extension_file
+
+	sed_string="s/.*/php$PHPBASEVER-&/g"
+	modules=$(sed "$sed_string" "$extension_file" | tr '\n' ' ')
+	apt install --no-install-recommends --ignore-missing -y $modules
+	if [ $? -ne 0 ]; then
+        echo "Error occurred during apt installation. Exiting..."
+        exit 1
+    fi
 else
     echo "Extensions file '$module_file' not found."
     exit 1
 fi
 
-# Enable php fpm config for apache2
-a2enconf php8.1-fpm
-
+# Additional packages
+add_packages="/app/additional-packages.txt"
+if [ -f "$add_packages" ]; then
+    sed -i 's/\r$//' $add_packages
+	sed -i -e '$a\'  $add_packages
+	modules=$(<"$add_packages" tr '\n' ' ')
+	apt install --no-install-recommends --ignore-missing -y $modules
+	if [ $? -ne 0 ]; then
+        echo "Error occurred during apt installation. Exiting..."
+        exit 1
+    fi
+else
+    echo "file '$module_file' not found."
+    exit 1
+fi
 
 # Backup default of apache2
 mkdir /app/default

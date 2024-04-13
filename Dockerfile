@@ -12,9 +12,9 @@ WORKDIR $APPDIR
 COPY scripts ./scripts
 RUN chmod +x ./scripts -R
 
-# Copy modules and extensions
-COPY apache2-modules.txt apache2-modules.txt
-COPY php-extensions.txt php-extensions.txt
+# Copy extensions
+COPY modules/additional-packages.txt additional-packages.txt
+COPY modules/php-extensions.txt php-extensions.txt
 
 # Run Setup
 RUN ["/bin/bash", "-c", "$APPDIR/scripts/setup.sh"]
