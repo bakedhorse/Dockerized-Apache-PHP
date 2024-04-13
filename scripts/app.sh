@@ -26,7 +26,7 @@ if [ -z "$(ls -A "$foldercheck")" ]; then
 fi
 
 # Apache2 modules
-echo "Enabling apache2 modules..."
+echo "#Enabling apache2 modules..."
 module_file="/app/modules/apache2-modules.txt"
 if [ -f "$module_file" ]; then
     sed -i 's/\r$//' $module_file
@@ -35,10 +35,10 @@ if [ -f "$module_file" ]; then
         if [[ $module == -* ]]; then
             module=${module#*-}
             echo "Disabling $module"
-            a2dismod "$module"
+            a2dismod "$module" > /dev/null 2>&1
         else
             echo "Enabling $module"
-            a2enmod "$module"
+            a2enmod "$module" > /dev/null 2>&1
         fi
     done < "$module_file"
 else
@@ -46,7 +46,7 @@ else
     exit 1
 fi
 # Apache2 confs
-echo "Enabling apache2 confs..."
+echo "#Enabling apache2 confs..."
 conf_file="/app/modules/apache2-confs.txt"
 if [ -f "$conf_file" ]; then
     sed -i 's/\r$//' $conf_file
@@ -55,10 +55,10 @@ if [ -f "$conf_file" ]; then
         if [[ $module == -* ]]; then
             module=${module#*-}
             echo "Disabling $module"
-            a2disconf "$module"
+            a2disconf "$module" > /dev/null 2>&1
         else
             echo "Enabling $module"
-            a2enconf "$module"
+            a2enconf "$module" > /dev/null 2>&1
         fi
     done < "$conf_file"
 else
@@ -66,7 +66,7 @@ else
     exit 1
 fi
 # Apache2 sites
-echo "Enabling apache2 sites..."
+echo "#Enabling apache2 sites..."
 site_file="/app/modules/apache2-sites.txt"
 if [ -f "$site_file" ]; then
     sed -i 's/\r$//' $site_file
@@ -75,10 +75,10 @@ if [ -f "$site_file" ]; then
         if [[ $module == -* ]]; then
             module=${module#*-}
             echo "Disabling $module"
-            a2dissite "$module"
+            a2dissite "$module" > /dev/null 2>&1
         else
             echo "Enabling $module"
-            a2ensite "$module"
+            a2ensite "$module" > /dev/null 2>&1
         fi
     done < "$site_file"
 else
