@@ -9,7 +9,7 @@ Clone the files from the github and go into the folder it creates.
 * cd Dockerized-Apache-PHP
 ```
 Modify PHP extensions and additional packages before building, if you want to add any php extensions and/or additional packages for apache2.
-(If you update these files in the future, you must do "docker compose build" afterwards otherwise any new packages will not be installed)
+(If you update these files in the future, you must do ```docker compose build``` afterwards otherwise any new packages will not be installed)
 ```
 * nano modules/php-extensions.txt
 * nano modules/additional-packages.txt
@@ -29,7 +29,7 @@ Add any modules, confs, and/or sites to the corresponding text files.
 * nano modules/apache2-confs.txt
 * nano modules/apache2-sites.txt
 ```
-These will be applied every time the docker starts up with "docker compose up". Any custom modules or confs not in apache2 by default must be added either through the "php-extensions.txt" or "additional-packages.txt", or manually through the "conf" folder.
+These will be applied every time the docker starts up with ```docker compose up```. Any custom modules or confs not in apache2 by default must be added either through the ```php-extensions.txt``` or ```additional-packages.txt```, or manually through the ```conf``` folder.
 
 ### Configuration
 All files for apache2 are located in
