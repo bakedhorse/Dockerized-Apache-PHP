@@ -4,6 +4,11 @@ PHPBASEVER=8.1
 
 cd /app
 
+# Add apache repo (to get the latest and greatest!)
+apt update
+apt install -y software-properties-common
+add-apt-repository ppa:ondrej/apache2
+
 # Update packages
 apt update
 

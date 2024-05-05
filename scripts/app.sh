@@ -25,15 +25,22 @@ if [ -z "$(ls -A "$foldercheck")" ]; then
     cp -ar /app/default/php /etc/
 fi
 
+# Update packages
+apt update
+apt upgrade -y
+
+# Make dir for php (idk bandaid solution fn)
+mkdir -p /run/php/
+
 # List php modules (and its packages)
-echo "#Listing PHP Modules"
+echo "==Listing PHP Modules"
 php -m
-echo "#Listing PHP Module Packages"
+echo "==Listing PHP Module Packages"
 apt list --installed | grep php$PHPBASEVER
 echo
 
 # Apache2 modules
-echo "#Enabling apache2 modules..."
+echo "==Enabling apache2 modules..."
 module_file="/app/modules/apache2-modules.txt"
 if [ -f "$module_file" ]; then
     sed -i 's/\r$//' $module_file
@@ -53,7 +60,7 @@ else
     exit 1
 fi
 # Apache2 confs
-echo "#Enabling apache2 confs..."
+echo "==Enabling apache2 confs..."
 conf_file="/app/modules/apache2-confs.txt"
 if [ -f "$conf_file" ]; then
     sed -i 's/\r$//' $conf_file
@@ -73,7 +80,7 @@ else
     exit 1
 fi
 # Apache2 sites
-echo "#Enabling apache2 sites..."
+echo "==Enabling apache2 sites..."
 site_file="/app/modules/apache2-sites.txt"
 if [ -f "$site_file" ]; then
     sed -i 's/\r$//' $site_file
@@ -93,7 +100,16 @@ else
     exit 1
 fi
 
+# Versions of the main softwares
+echo ""
+echo "==Apache Version"
+apachectl -v
+echo "==PHP Version"
+php --version
+echo ""
 
+
+echo "==Starting software"
 # FPM service
 /etc/init.d/php8.1-fpm restart
 
@@ -101,7 +117,7 @@ fi
 /etc/init.d/apache2 start
 
 
-# Lock for 
+# Loop to keep docker running
 while true; do
     # permissions
     chown www-data:www-data /var/www -R

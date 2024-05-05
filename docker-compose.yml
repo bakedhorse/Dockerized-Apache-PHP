@@ -5,12 +5,13 @@ services:
       context: ./
       dockerfile: ./Dockerfile
     restart: unless-stopped
-    #network_mode: host   # Uncomment if u need access to host network
+    #network_mode: host  # Uncomment if u need access to host network
     volumes:
       - "${APP_DIR}/modules/:/app/modules"
       - "${APP_DIR}/conf/apache2/:/etc/apache2/"
       - "${APP_DIR}/conf/www/:/var/www/"
       - "${APP_DIR}/conf/php/:/etc/php/"
+      - "${APP_DIR}/logs/:/var/log/apache2/"
       #- "${APP_DIR}/scripts/app.sh:/app/scripts/app.sh"
       #- "/etc/acme.sh/:/etc/acme.sh"
     ports:
