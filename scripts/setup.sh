@@ -26,7 +26,6 @@ if [ -f "$extension_file" ]; then
 	sed -i -e '$a\' $extension_file
 
 	sed_string="s/.*/php$PHP_VERSION-&/g"
-        echo $sed_string
 	modules=$(sed "$sed_string" "$extension_file" | tr '\n' ' ')
 	apt install --no-install-recommends --ignore-missing -y $modules
 	if [ $? -ne 0 ]; then
