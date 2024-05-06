@@ -1,19 +1,20 @@
 #!/bin/bash
 
-PHPBASEVER=8.1
-
 cd /app
 
-# Add apache repo (to get the latest and greatest!)
+# Refresh Updates
 apt update
-apt install -y software-properties-common
+# Get add-apt-repository
+apt install -y software-properties-common --no-install-recommends
+# Get repos with latest apache and php
 add-apt-repository ppa:ondrej/apache2
+add-apt-repository ppa:ondrej/php
 
-# Update packages
+# Update packages (again)
 apt update
 
 # Install apache2 and php
-apt install -y apache2 php$PHPBASEVER php$PHPBASEVER-fpm --no-install-recommends
+apt install -y apache2 php$PHP_VERSION php$PHP_VERSION-fpm --no-install-recommends
 
 # Disable the default site file by default (it will be enabled on startup of container due to the default apache2-sites.txt file)
 a2dissite 000-default
@@ -24,7 +25,8 @@ if [ -f "$extension_file" ]; then
 	sed -i 's/\r$//' $extension_file
 	sed -i -e '$a\' $extension_file
 
-	sed_string="s/.*/php$PHPBASEVER-&/g"
+	sed_string="s/.*/php$PHP_VERSION-&/g"
+        echo $sed_string
 	modules=$(sed "$sed_string" "$extension_file" | tr '\n' ' ')
 	apt install --no-install-recommends --ignore-missing -y $modules
 	if [ $? -ne 0 ]; then
@@ -57,5 +59,6 @@ mkdir /app/default
 cp -ar /etc/apache2/ /app/default/apache2
 cp -ar /var/www/ /app/default/www
 # Php backup
-cp -ar /etc/php /app/default/php
+mkdir /app/default/php
+cp -ar /etc/php/$PHP_VERSION /app/default/php/$PHP_VERSION
 

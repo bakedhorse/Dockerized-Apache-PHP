@@ -4,6 +4,8 @@ services:
     build:
       context: ./
       dockerfile: ./Dockerfile
+      args:
+        PHP_VERSION: ${PHP_VERSION}
     restart: unless-stopped
     #network_mode: host  # Uncomment if u need access to host network
     volumes:

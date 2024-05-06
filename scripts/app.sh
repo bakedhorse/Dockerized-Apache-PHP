@@ -7,7 +7,9 @@ function handle_sigint {
 }
 trap 'handle_sigint' SIGINT
 
-# Check if directories exist
+#### Check for files and directories needed to work
+echo "==Checking for important directories/files"
+# Check for apache2 config
 foldercheck=/etc/apache2
 if [ -z "$(ls -A "$foldercheck")" ]; then
     echo "Empty apache config, restoring defaults"
@@ -19,26 +21,51 @@ if [ -z "$(ls -A "$foldercheck")" ]; then
     chown www-data:www-data /var/www -R
     chown root:root /etc/apache2 -R
 fi
-foldercheck=/etc/php
+# Check for php fpm file for apache2
+filecheck=apache2/conf-available/php$PHP_VERSION-fpm.conf
+if ! [ -f "/etc/$filecheck" ]; then
+  echo "PHP$PHP_VERSION FPM config missing, restoring"
+  cp -ar /app/default/$filecheck /etc/$filecheck
+fi
+# Check for php version folder
+foldercheck=/etc/php/$PHP_VERSION
 if [ -z "$(ls -A "$foldercheck")" ]; then
     echo "Empty php config, restoring defaults"
-    cp -ar /app/default/php /etc/
+    mkdir /etc/php
+    cp -ar /app/default/php/$PHP_VERSION /etc/php/$PHP_VERSION
+fi
+# Check for www
+foldercheck=/var/www
+if [ -z "$(ls -A "$foldercheck")" ]; then
+    echo "Empty www, restoring defaults"
+    mkdir /var/www
+    cp -ar /app/default/www /var/www
 fi
 
-# Update packages
-apt update
-apt upgrade -y
 
 # Make dir for php (idk bandaid solution fn)
 mkdir -p /run/php/
+# Fixing permissions of /var/www
+chown www-data:www-data /var/www -R
 
+echo
+############### Update packages
+echo "== Update packages"
+# Update packages
+apt update
+apt upgrade -y
+echo
+
+############# List out packages and other stuffs
 # List php modules (and its packages)
 echo "==Listing PHP Modules"
 php -m
 echo "==Listing PHP Module Packages"
-apt list --installed | grep php$PHPBASEVER
+apt list --installed | grep php$PHP_VERSION
 echo
 
+
+############ Enabling modules, confs and sites
 # Apache2 modules
 echo "==Enabling apache2 modules..."
 module_file="/app/modules/apache2-modules.txt"
@@ -60,7 +87,9 @@ else
     exit 1
 fi
 # Apache2 confs
+echo
 echo "==Enabling apache2 confs..."
+a2enconf php$PHP_VERSION-fpm
 conf_file="/app/modules/apache2-confs.txt"
 if [ -f "$conf_file" ]; then
     sed -i 's/\r$//' $conf_file
@@ -80,6 +109,7 @@ else
     exit 1
 fi
 # Apache2 sites
+echo
 echo "==Enabling apache2 sites..."
 site_file="/app/modules/apache2-sites.txt"
 if [ -f "$site_file" ]; then
@@ -100,26 +130,21 @@ else
     exit 1
 fi
 
-# Versions of the main softwares
-echo ""
+echo
+############# Print version numbers
 echo "==Apache Version"
 apachectl -v
 echo "==PHP Version"
 php --version
 echo ""
 
-
+############ Start apache2 and php
 echo "==Starting software"
 # FPM service
-/etc/init.d/php8.1-fpm restart
+/etc/init.d/php$PHP_VERSION-fpm restart
 
 # Apache service
 /etc/init.d/apache2 start
 
-
-# Loop to keep docker running
-while true; do
-    # permissions
-    chown www-data:www-data /var/www -R
-    sleep 10
-done
+# Keep service alive until SIGINT (better solution than a infinite loop)
+sleep infinity
