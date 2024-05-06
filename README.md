@@ -47,9 +47,9 @@ Files for php are located
 Any modifications that require modules, confs, or sites to be enabled/disabled, or install php extensions should be done too. [Ref#1](#modifying-apache2) [Ref#2](#install) 
 
 ### Keeping up to date
-Currently the docker's ```app.sh``` file automatically does packages updates on start up. This is the current solution for keeping servers up to date. However this may change.
-Apache2 uses a ppa repo to have the latest version downloaded.
-As for PHP, it uses ubuntu's current release of it, specifically PHP8.1; however due to the PHP8.1's future depreciation, the project will be updated to PHP8.2 or newer version available. Currently theres no easy way to change this, which will hopefully change soon with an environmental variable or setting.
+Currently the docker's ```app.sh``` file automatically does packages updates on start up. This is the current solution for keeping servers up to date. However this may change. <br>
+* Apache2 and PHP uses a ppa repo to have the latest version downloaded.<br>
+* Changing the major PHP version is doable in ```.env```, however requires ```docker compose build``` to be done. Along with the PHP config files needing to be re-done due to PHP having separate folders for their major versions.<br>
 
 ### Why is this project's code doo-doo?
 I just wanted something that functioned and I can easily modify without jumping through thousands of loops.
