@@ -60,4 +60,3 @@ cp -ar /var/www/ /app/default/www
 # Php backup
 mkdir /app/default/php
 cp -ar /etc/php/$PHP_VERSION /app/default/php/$PHP_VERSION
-

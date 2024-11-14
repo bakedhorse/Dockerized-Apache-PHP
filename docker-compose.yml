@@ -6,6 +6,7 @@ services:
       dockerfile: ./Dockerfile
       args:
         PHP_VERSION: ${PHP_VERSION}
+        APT_UPDATE_ON_START: ${APT_UPDATE_ON_START}
     restart: unless-stopped
     #network_mode: host  # Uncomment if u need access to host network
     volumes:

@@ -52,8 +52,13 @@ echo
 ############### Update packages
 echo "== Update packages"
 # Update packages
-apt update
-apt upgrade -y
+export DEBIAN_FRONTEND="noninteractive"
+if [[ "$APT_UPDATE_ON_START" == "1" ]]; then
+	apt update
+	apt upgrade -y
+else
+        echo "Package updates are disabled."
+fi
 echo
 
 ############# List out packages and other stuffs
@@ -147,4 +152,9 @@ echo "==Starting software"
 /etc/init.d/apache2 start
 
 # Keep service alive until SIGINT (better solution than a infinite loop)
-sleep infinity
+#sleep infinity
+while true
+do
+        chown www-data:www-data /var/www -R
+        sleep 30
+done
