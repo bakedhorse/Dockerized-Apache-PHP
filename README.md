@@ -1,4 +1,8 @@
-# Dockerized Apache and PHP (this-could've-been-done-better-but-it-works-edition)
+# Dockerized Apache and PHP 
+* (this-could've-been-done-better-but-it-works-edition)
+
+## NOTICE: I am currently migrating from apache2 to nginx. This means this project won't be actively supported anymore. However the code will be re-used (for now) in the [nginx](https://github.com/bakedhorse/Dockerized-Nginx) version.
+
 Dockerfile that dockerizes Apache and PHP in one container using Ubuntu.
 Has the ability to add packages and modify apache2 modules, confs, and sites.
 
